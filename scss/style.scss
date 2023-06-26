@@ -1,0 +1,147 @@
+body {
+  background-image: url("https://images.pexels.com/photos/209831/pexels-photo-209831.jpeg?cs=srgb&dl=pexels-pixabay-209831.jpg&fm=jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 97vh;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  &__wrapper {
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 5px;
+    overflow: auto;
+    max-height: 500px;
+    margin-top: 100px;
+    gap: 20px;
+
+    .cart {
+      background-color: rgba(255, 255, 255, 0.368);
+      border-radius: 10px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 20px;
+      align-items: center;
+      min-width: 200px;
+      font-weight: bolder;
+
+      &__weather {
+        width: 70px;
+      }
+
+      &__description {
+        color: blue;
+        font-family: sans-serif;
+        font-weight: bolder;
+        font-family: revert;
+      }
+
+      &__main {
+        font-size: 30px;
+      }
+
+      &__temp {
+        display: flex;
+        gap: 5px;
+        flex-direction: column;
+        font-family: fantasy;
+        font-weight: 300;
+      }
+
+      &__item {
+        &--flex {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          padding: 5px;
+          color: rgb(4, 68, 230);
+        }
+
+        &--column {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+
+        &--any {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+
+  .form {
+    border-radius: 30px;
+    width: 100%;
+    text-align: center;
+
+    &__input {
+      color: #fff;
+      font-size: 1.25rem;
+      line-height: 1;
+      border-style: none;
+      outline: none;
+      height: calc(0.5em);
+      width: 20%;
+      padding: 0.8em 1em;
+      border: 0.25em solid transparent;
+      background-image: linear-gradient(#000, #7d5d5d),
+        linear-gradient(
+          120deg,
+          rgb(64, 64, 65) 0%,
+          rgb(10, 59, 255) 50%,
+          #9f0 100%
+        );
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      border-radius: 1.8em;
+      background-size: 200% 100%;
+      transition: background-position 0.8s ease-out;
+    }
+
+    &__button {
+      border: none;
+      border-radius: 20px;
+      width: 100px;
+      padding: 14px;
+      background-color: rgba(0, 0, 255, 0.461);
+      font-size: 14px;
+      font-weight: bolder;
+      color: white;
+
+      cursor: pointer;
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(0, 94, 255);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #004bb3;
+}
