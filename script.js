@@ -3,7 +3,7 @@ let xhr = new XMLHttpRequest();
 let form = document.querySelector("form");
 let search = document.querySelector(".form__input");
 
-form.addEventListener(
+form.addEventListener( 
   "submit",
   (e) => {
     e.preventDefault();
