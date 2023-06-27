@@ -1,63 +1,137 @@
-const API_Key = "543f23733be304a1d8ac1fb376ff70bf";
-let xhr = new XMLHttpRequest();
 let form = document.querySelector("form");
-let search = document.querySelector(".form__input");
+let input = document.querySelector(".form__input");
+let box = document.querySelector("box");
+let container__images = document.querySelector(".container__images");
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  let searchTerms = input.value
+    .trim()
+    .split(" ")
+    .filter((e) => e.trim().length > 0);
+  if (input.value === "") {
+    input.placeholder = "field is empty...";
+  } else {
+    let uniqueSearchTerms = [...new Set(searchTerms)]
+    const requests = uniqueSearchTerms.map((term) => {
+      return new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open(
+          "GET",
+          `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=b3ce50d157bf5280e6b91ebc5f42bdd8&format=json&nojsoncallback=1&text=${term}&per_page=5`
+        );
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            const json = JSON.parse(xhr.responseText);
+            const images = json.photos.photo.map((photo) => {
+              return {
+                k_name: term,
+                img: `https://live.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`,
+              };
+            });
+            resolve({ name: term, images });
+          }
+        };
+        xhr.send();
+      });
+    });
 
-form.addEventListener( 
-  "submit",
-  (e) => {
-    e.preventDefault();
-    let data = [];
-    xhr.open(
-      "GET",
-      `https://api.openweathermap.org/data/2.5/forecast?q=${search.value}&units=metric&cnt=40&appid=${API_Key}`,
-      true
-    );
-    xhr.onload = function () {
-      if (xhr.status === 200) {
-        data = JSON.parse(xhr.responseText);
-        main(data, search);
-      } else {
-        search.placeholder = "No such city exists";
-      }
-    };
-    xhr.onerror = function () {
-      console.log("Request failed");
-    };
+    Promise.all(requests)
+      .then((results) => {
+        const allData = results.flatMap((result) => result.images);
+        main(allData, uniqueSearchTerms);
+        results = [];
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+});
 
-    xhr.send();
-    search.value = "";
-  },
-  false
-);
+function main(datas, searchTerms) {
+  boxs.innerText = "";
+  container__images.innerText = "";
+  searchTerms = searchTerms.filter((term) =>
+    datas.some((el) => el.k_name === term)
+  );
+  if (datas.length === 0) {
+    container__images.innerText = "There are no pictures with that name․․․";
+  }
+  datas
+    .sort(() => Math.random() - 0.5)
+    .forEach((el) => {
+      let licImg = document.createElement("img");
+      licImg.setAttribute("src", el.img);
+      licImg.setAttribute("alt", el.k_name);
+      licImg.setAttribute("class", "container__img");
 
-function main(resolve) {
-  let wrapper = document.querySelector(".container__wrapper");
-  wrapper.innerHTML = "";
-  console.log(resolve);
-  resolve.list.forEach((element) => {
-    wrapper.innerHTML += `
-  <div class="cart">
-    <div class="cart__item cart__item--flex">
-      <span>${resolve.city.name}</span>
-      <span>${element.dt_txt.split(" ")[1].substring(0, 5)}</span>
-      <span>${element.dt_txt.split(" ")[0].substring(0, 10)}</span>
-    </div>
-
-   <div class="cart__item cart__item--column">
-    <p class="cart__main">${element.main.temp.toFixed()}  °C </p>
-    <span class="cart__description">${element.weather[0].description}</span>
-   </div>
-
-    <div class="cart__item cart__item--any">
-      <div class="cart__temp">
-        <span>max: ${element.main.temp_max.toFixed()}  °C</span>
-        <span>min: ${element.main.temp_min.toFixed()} °C</span>
-        <span>wind:${element.wind.speed}:h</span>
-      </div>
-        <p class="cart__rotate" style="transform: rotate(${element.wind.deg}deg)">\u2191</p>
-        <img class="cart__weather" src ="https://openweathermap.org/img/w/${element.weather[0].icon}.png"/>
-  </div>
-   `;
+      licImg.setAttribute("id", el.k_name);
+      licImg.addEventListener("dragstart", handleDragStart);
+      licImg.addEventListener("dragend", handleDragEnd);
+      licImg.addEventListener("drag", handleDrag);
+      container__images.appendChild(licImg);
+    });
+  searchTerms.forEach((el) => {
+    let boxBox = document.createElement("div");
+    boxBox.setAttribute("class", "boxBox");
+    boxBox.innerHTML =`<p class="container__name" >${el}</p>`;
+    boxBox.addEventListener("click", zoomClick);
+    boxBox.setAttribute("id", el);
+    boxBox.addEventListener("dragenter", handleDragEnter);
+    boxBox.addEventListener("dragleave", handleDragLeave);
+    boxBox.addEventListener("dragover", handleDragOver);
+    boxBox.addEventListener("drop", handleDrop);
+    boxs.appendChild(boxBox);
   });
+  input.value=""
+}
+let draggedItem = null;
+
+function handleDragStart(event) {
+  this.classList.add("container__img--active");
+  container__images.classList.add("container__images--active");
+  draggedItem = this;
+}
+
+function handleDragEnd() {
+  this.classList.remove("container__img--active");
+  draggedItem = null;
+  container__images.classList.remove("container__images--active");
+}
+
+function handleDrag(event) { }
+
+function handleDragEnter(event) {
+  event.preventDefault();
+  this.classList.add("boxBox--active");
+}
+
+function handleDragLeave(event) {
+  this.classList.remove("boxBox--active");
+}
+
+function handleDragOver(event) {
+  this.classList.remove("boxBox--active");
+  event.preventDefault();
+}
+
+function handleDrop() {
+
+  if (draggedItem.id === this.id) {
+    this.append(draggedItem);
+  } else {
+  }
+  if (container__images.childElementCount === 0) {
+    let win = document.createElement("p");
+    win.setAttribute("class", "container__win");
+    win.innerText = "YOU WIN   )))))";
+    container__images.append(win);
+  }
+}
+
+function zoomClick() {
+  if (this.classList.contains("boxBox--zoom")) {
+    this.classList.remove("boxBox--zoom");
+  } else {
+    this.classList.add("boxBox--zoom");
+  }
 }
