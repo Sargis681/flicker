@@ -108,7 +108,7 @@ body {
   }
 
   .container {
-    &__images {
+    &__gallery {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -116,7 +116,6 @@ body {
       padding: 20px;
       border: 4px dashed rgb(42, 26, 84);
       background-color: rgba(0, 255, 255, 0.337);
-      /* background-color: wheat; */
       border-radius: 30px;
     }
 
@@ -149,7 +148,7 @@ body {
     gap: 10px;
   }
 
-  .boxBox {
+  .boxs_regular{
     width: 200px;
     padding: 10px;
     color: red;
@@ -167,12 +166,11 @@ body {
     gap: 10px;
     cursor: pointer;
     background-color: #000;
-    .container__name{
+    .boxs__name{
         color: wheat;
         font-size: 25px;
         border: 2px dashed blue;
         width: 100%;
-        
     }
     img{
         opacity: 0;

@@ -1,7 +1,7 @@
 let form = document.querySelector("form");
 let input = document.querySelector(".form__input");
 let box = document.querySelector("box");
-let container__images = document.querySelector(".container__images");
+let container__images = document.querySelector(".container__gallery");
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   let searchTerms = input.value
@@ -34,7 +34,7 @@ form.addEventListener("submit", (e) => {
         xhr.send();
       });
     });
-
+ 
     Promise.all(requests)
       .then((results) => {
         const allData = results.flatMap((result) => result.images);
@@ -72,8 +72,8 @@ function main(datas, searchTerms) {
     });
   searchTerms.forEach((el) => {
     let boxBox = document.createElement("div");
-    boxBox.setAttribute("class", "boxBox");
-    boxBox.innerHTML =`<p class="container__name" >${el}</p>`;
+    boxBox.setAttribute("class", "boxs_regular");
+    boxBox.innerHTML =`<p class="boxs__name" >${el}</p>`;
     boxBox.addEventListener("click", zoomClick);
     boxBox.setAttribute("id", el);
     boxBox.addEventListener("dragenter", handleDragEnter);
@@ -82,7 +82,7 @@ function main(datas, searchTerms) {
     boxBox.addEventListener("drop", handleDrop);
     boxs.appendChild(boxBox);
   });
-  input.value=""
+  // input.value=""
 }
 let draggedItem = null;
 
@@ -129,9 +129,9 @@ function handleDrop() {
 }
 
 function zoomClick() {
-  if (this.classList.contains("boxBox--zoom")) {
-    this.classList.remove("boxBox--zoom");
+  if (this.classList.contains("boxs_regular--zoom")) {
+    this.classList.remove("boxs_regular--zoom");
   } else {
-    this.classList.add("boxBox--zoom");
+    this.classList.add("boxs_regular--zoom");
   }
 }

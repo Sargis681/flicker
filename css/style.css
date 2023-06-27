@@ -81,7 +81,7 @@ body {
     .container .form__button:hover {
       background-color: #ffffff;
       color: black; }
-  .container .container__images {
+  .container .container__gallery {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -89,7 +89,6 @@ body {
     padding: 20px;
     border: 4px dashed #2a1a54;
     background-color: rgba(0, 255, 255, 0.337);
-    /* background-color: wheat; */
     border-radius: 30px; }
   .container .container__win {
     text-align: center;
@@ -111,7 +110,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 10px; }
-  .container .boxBox {
+  .container .boxs_regular {
     width: 200px;
     padding: 10px;
     color: red;
@@ -128,14 +127,14 @@ body {
     gap: 10px;
     cursor: pointer;
     background-color: #000; }
-    .container .boxBox .container__name {
+    .container .boxs_regular .boxs__name {
       color: wheat;
       font-size: 25px;
       border: 2px dashed blue;
       width: 100%; }
-    .container .boxBox img {
+    .container .boxs_regular img {
       opacity: 0; }
-    .container .boxBox--zoom {
+    .container .boxs_regular--zoom {
       width: 300px;
       height: 300px;
       z-index: 10000;
@@ -146,7 +145,7 @@ body {
       margin: 0px auto;
       background-color: black;
       cursor: pointer; }
-      .container .boxBox--zoom img {
+      .container .boxs_regular--zoom img {
         width: 200px;
         opacity: 1;
         border: 2px dashed red; }
