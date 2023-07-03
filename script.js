@@ -2,8 +2,12 @@ let form = document.querySelector("form");
 let input = document.querySelector(".form__input");
 let box = document.querySelector("box");
 let container__images = document.querySelector(".container__images");
+let boxs = document.querySelector(".boxs");
+let draggedItem = null;
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
+
   let searchTerms = input.value
     .trim()
     .split(" ")
@@ -11,14 +15,18 @@ form.addEventListener("submit", (e) => {
   if (input.value === "") {
     input.placeholder = "field is empty...";
   } else {
-    let uniqueSearchTerms = [...new Set(searchTerms)]
-    const requests = uniqueSearchTerms.map((term) => {
-      return new Promise((resolve) => {
+    let uniqueSearchTerms = searchTerms.filter(
+      (item, index) => searchTerms.indexOf(item) === index
+    );
+
+    async function fetchData(term) {
+      return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open(
           "GET",
           `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=b3ce50d157bf5280e6b91ebc5f42bdd8&format=json&nojsoncallback=1&text=${term}&per_page=5`
         );
+
         xhr.onload = () => {
           if (xhr.status === 200) {
             const json = JSON.parse(xhr.responseText);
@@ -29,21 +37,31 @@ form.addEventListener("submit", (e) => {
               };
             });
             resolve({ name: term, images });
+          } else {
+            reject(new Error(`Failed to fetch data for term: ${term}`));
           }
+        };
+        xhr.onerror = () => {
+          reject(new Error(`Failed to fetch data for term: ${term}`));
         };
         xhr.send();
       });
-    });
+    }
 
-    Promise.all(requests)
-      .then((results) => {
-        const allData = results.flatMap((result) => result.images);
-        main(allData, uniqueSearchTerms);
-        results = [];
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    (async () => {
+      const results = [];
+      for (const term of uniqueSearchTerms) {
+        try {
+          const data = await fetchData(term);
+          results.push(data);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      const allData = results.flatMap((result) => result.images);
+      main(allData, uniqueSearchTerms);
+    })();
   }
 });
 
@@ -54,7 +72,7 @@ function main(datas, searchTerms) {
     datas.some((el) => el.k_name === term)
   );
   if (datas.length === 0) {
-    container__images.innerText = "There are no pictures with that name․․․";
+    container__images.innerText = "There are no pictures with that name...";
   }
   datas
     .sort(() => Math.random() - 0.5)
@@ -73,7 +91,7 @@ function main(datas, searchTerms) {
   searchTerms.forEach((el) => {
     let boxBox = document.createElement("div");
     boxBox.setAttribute("class", "boxBox");
-    boxBox.innerHTML =`<p class="container__name" >${el}</p>`;
+    boxBox.innerHTML = `<p class="container__name" >${el}</p>`;
     boxBox.addEventListener("click", zoomClick);
     boxBox.setAttribute("id", el);
     boxBox.addEventListener("dragenter", handleDragEnter);
@@ -82,9 +100,8 @@ function main(datas, searchTerms) {
     boxBox.addEventListener("drop", handleDrop);
     boxs.appendChild(boxBox);
   });
-  input.value=""
+  input.value = "";
 }
-let draggedItem = null;
 
 function handleDragStart(event) {
   this.classList.add("container__img--active");
@@ -98,7 +115,7 @@ function handleDragEnd() {
   container__images.classList.remove("container__images--active");
 }
 
-function handleDrag(event) { }
+function handleDrag(event) {}
 
 function handleDragEnter(event) {
   event.preventDefault();
@@ -115,7 +132,6 @@ function handleDragOver(event) {
 }
 
 function handleDrop() {
-
   if (draggedItem.id === this.id) {
     this.append(draggedItem);
   } else {
