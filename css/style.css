@@ -107,7 +107,7 @@ body {
       opacity: 0.3;
       transition: all 0.3s;
       border: 2px dashed blue; }
-  .container #boxs {
+  .container .boxs {
     display: flex;
     justify-content: center;
     gap: 10px; }
