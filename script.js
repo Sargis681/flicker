@@ -1,11 +1,11 @@
 let form = document.querySelector("form");
 let input = document.querySelector(".form__input");
-let box = document.querySelector("box");
+let box = document.querySelector(".box");
 let container__images = document.querySelector(".container__images");
 let boxs = document.querySelector(".boxs");
 let draggedItem = null;
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   let searchTerms = input.value
@@ -48,20 +48,16 @@ form.addEventListener("submit", (e) => {
       });
     }
 
-    (async () => {
-      const results = [];
-      for (const term of uniqueSearchTerms) {
-        try {
-          const data = await fetchData(term);
-          results.push(data);
-        } catch (error) {
-          console.error(error);
-        }
-      }
+    try {
+      const results = await Promise.all(
+        uniqueSearchTerms.map((term) => fetchData(term))
+      );
 
       const allData = results.flatMap((result) => result.images);
       main(allData, uniqueSearchTerms);
-    })();
+    } catch (error) {
+      console.error(error);
+    }
   }
 });
 
