@@ -49,10 +49,15 @@ form.addEventListener("submit", async (e) => {
     }
 
     try {
-      const results = await Promise.all(
-        uniqueSearchTerms.map((term) => fetchData(term))
-      );
-
+      const results = [];
+      for (const term of uniqueSearchTerms) {
+        try {
+          const data = await fetchData(term);
+          results.push(data);
+        } catch (error) {
+          console.error(error);
+        }
+      }
       const allData = results.flatMap((result) => result.images);
       main(allData, uniqueSearchTerms);
     } catch (error) {
